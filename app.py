@@ -100,12 +100,12 @@ if uploaded_file is not None:
             st.bar_chart(top_accounts[:10])  # Display top 10 accounts
 
             # Assuming 'Transaction Details' contains textual descriptions
-            word_cloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details'].astype(str)))
-            fig, ax = plt.subplots()
-            ax.imshow(word_cloud, interpolation='nearest')
-            ax.axis("off")
-            st.subheader("Word Cloud of Transaction Details")
-            st.pyplot(fig)
+            # word_cloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details'].astype(str)))
+            # fig, ax = plt.subplots()
+            # ax.imshow(word_cloud, interpolation='nearest')
+            # ax.axis("off")
+            # st.subheader("Word Cloud of Transaction Details")
+            # st.pyplot(fig)
 
             st.subheader("Layer-wise Disputed Amount Distribution")
             fig, ax = plt.subplots()
