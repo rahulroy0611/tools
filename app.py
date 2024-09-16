@@ -122,7 +122,7 @@ if uploaded_file is not None:
                 st.line_chart(processed_data['Date'].value_counts().sort_index())
 
             # 5. Correlation Between Amount and Layer (if applicable)
-            if processed_data['Amount'].dtype == 'float64' and data['Layer'].dtype == 'int64':
+            if processed_data['Amount'].dtype == 'float64' and processed_data['Layer'].dtype == 'int64':
                 st.subheader("Correlation Between Amount and Layer")
                 correlation = processed_data['Amount'].corr(processed_data['Layer'])
                 st.write(f"Correlation: {correlation}")
