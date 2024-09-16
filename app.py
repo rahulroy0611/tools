@@ -133,8 +133,11 @@ if uploaded_file is not None:
 
             # Interactive Filters
             st.subheader("Interactive Filters")
-            disputed_amount_filter = st.slider("Filter Disputed Amount:", min_value=processed_data['Amount'].min(), max_value=processed_data['Amount'].max())
-            filtered_data = processed_data[processed_data['Amount'] >= disputed_amount_filter]
+            disputed_amount_filter = st.slider("Filter Disputed Amount:", min_value=processed_data['Amount'].dropna().min(), max_value=processed_data['Amount'].dropna().max())
+
+            # Filter data based on the slider, handling None values
+            filtered_data = processed_data[processed_data['Amount'].fillna(0) >= disputed_amount_filter]
+
             st.write(filtered_data)  # Or display other charts or visualizations based on filtered data
 
     if os.path.exists("temp_pdf.pdf"):
