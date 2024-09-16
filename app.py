@@ -79,6 +79,7 @@ if uploaded_file is not None:
                     file_name="converted_data.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+            
             st.subheader("Distribution of Disputed Amounts")
             fig, ax = plt.subplots()
             ax.hist(processed_data['Amount'], bins='auto')
