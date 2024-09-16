@@ -131,17 +131,6 @@ if uploaded_file is not None:
                 correlation_matrix = processed_data.corr()
                 st.dataframe(correlation_matrix)
 
-            # Interactive Filters
-            st.subheader("Interactive Filters")
-            disputed_amount_filter = st.slider("Filter Disputed Amount:", min_value=processed_data['Amount'].dropna().min(), max_value=processed_data['Amount'].dropna().max())
-
-            # Filter data based on the slider, handling None values
-            if disputed_amount_filter is not None:
-                filtered_data = processed_data[processed_data['Amount'].fillna(0) >= disputed_amount_filter]
-            else:
-                filtered_data = processed_data  # Handle case where slider value is None
-
-            st.write(filtered_data)  # Or display other charts or visualizations based on filtered data
 
     if os.path.exists("temp_pdf.pdf"):
         os.remove("temp_pdf.pdf")
