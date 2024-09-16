@@ -102,29 +102,7 @@ if uploaded_file is not None:
             avg_amount_per_layer = processed_data.groupby('Layer')['Amount'].mean()
             st.bar_chart(avg_amount_per_layer)
 
-            # New Charts
-            # Time-based Analysis (assuming a 'Date' column)
-            if 'Date' in processed_data.columns:
-                st.subheader("Disputed Amounts Over Time")
-                fig, ax = plt.subplots()
-                ax.plot(processed_data['Date'], processed_data['Amount'])
-                ax.set_xlabel('Date')
-                ax.set_ylabel('Disputed Amount')
-                st.pyplot(fig)
-
-            # Transaction Details Analysis (assuming 'Transaction Details' contains textual data)
-            st.subheader("Word Cloud of Transaction Details")
-            word_cloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details'].astype(str)))
-            fig, ax = plt.subplots()
-            ax.imshow(word_cloud, interpolation='bilinear')
-            ax.axis('off')
-            st.pyplot(fig)
-
-            # Account-based Analysis (assuming 'Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber' is the account column)
-            st.subheader("Top Disputed Accounts")
-            top_accounts = processed_data.groupby('Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber')['Amount'].sum().sort_values(ascending=False)
-            st.bar_chart(top_accounts[:10])  # Display top 10 accounts
-
+            
 
 
     if os.path.exists("temp_pdf.pdf"):
