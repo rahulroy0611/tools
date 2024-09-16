@@ -42,8 +42,20 @@ def process_pdf(file_path):
     def Money(value):
         if pd.isna(value):
             return None
-        match = re.search(r'Disputed Amount: (\d+)', str(value))
-        return int(match.group(1)) if match else None
+
+        # Remove non-numeric characters and leading/trailing spaces
+        value = re.sub(r'[^\d]', '', str(value)).strip()
+
+        # Check if the value is empty after cleaning
+        if not value:
+            return None
+
+        try:
+            return int(value)
+        except ValueError:
+            # Handle cases where the value still cannot be converted to int
+            # You might want to log this or return a default value
+            return None
 
  
     data['Amount'] = data['Transaction Details'].apply(Money)
