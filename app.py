@@ -97,7 +97,7 @@ if uploaded_file is not None:
             transaction_counts = processed_data['Transaction Details'].value_counts()
             top_transactions = transaction_counts.head(10)  # Display top 10
 
-            st.subheader("Top Transaction Details")
+            st.subheader("Top 10 Transaction Details")
             st.bar_chart(top_transactions)
 
             #-------------------------------
