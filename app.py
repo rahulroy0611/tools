@@ -100,6 +100,12 @@ if uploaded_file is not None:
             st.subheader("Top Transaction Details")
             st.bar_chart(top_transactions)
 
+            #-------------------------------
+            wordcloud = WordCloud(width=800, height=400).generate(' '.join(data['Transaction Details']))
+
+            st.subheader("Word Cloud of Transaction Details")
+            st.image(wordcloud)
+
 
     if os.path.exists("temp_pdf.pdf"):
         os.remove("temp_pdf.pdf")
