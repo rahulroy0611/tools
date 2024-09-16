@@ -5,6 +5,8 @@ import numpy as np
 import re
 import streamlit as st
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+import seaborn as sns
 
 
 def process_page(pdf_path, page, drop_columns):
