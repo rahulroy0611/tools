@@ -1,51 +1,95 @@
-import streamlit as st
+import os
+import tabula
 import pandas as pd
-import PyPDF2
-from io import BytesIO
+import numpy as np
+import re
+import streamlit as st
+import matplotlib.pyplot as plt
 
-def extract_text_from_pdf(file):
-    text = ""
-    with BytesIO(file.read()) as pdf_file:
-        pdf_reader = PyPDF2.PdfReader(pdf_file)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-    return text
 
-def extract_data_from_text(text):
-    # This is a simplified example. You might need more sophisticated parsing for complex PDF structures.
-    lines = text.splitlines()
-    data = []
-    headers = None
-    for line in lines:
-        if not headers:
-            headers = line.split()
-            continue
-        row = line.split()
-        if len(row) == len(headers):
-            data.append(dict(zip(headers, row)))
-    return pd.DataFrame(data)
+def process_page(pdf_path, page, drop_columns):
+    df = tabula.read_pdf(pdf_path, pages=page, multiple_tables=True)[0]
+    df = pd.concat([pd.DataFrame([df.columns], columns=df.columns), df], ignore_index=True)
+    df.columns = range(df.shape[1])
+    df = df.drop(columns=drop_columns)
+    df.columns = range(df.shape[1])
+    return df
 
-def main():
-    st.title("PDF to Excel Converter")
 
-    uploaded_file = st.file_uploader("Upload a PDF file")
+def process_pdf(file_path):
+   
+    df = tabula.read_pdf(file_path, pages=1, multiple_tables=True)[1]
+    df = pd.concat([pd.DataFrame([df.columns], columns=df.columns), df], ignore_index=True)
 
-    if uploaded_file:
-        text = extract_text_from_pdf(uploaded_file)
-        data = extract_data_from_text(text)
+    df_1 = process_page(file_path, 2, [4, 10])
+    df_2 = process_page(file_path, 3, [9])
+    df_3 = process_page(file_path, 4, [9])
+    df_4 = process_page(file_path, 5, [9])
 
-        st.header("Extracted Data")
-        st.dataframe(data)
+    data = pd.concat([df_1, df_2, df_3, df_4], axis=0)
 
-        # Download the data as Excel
-        excel_data = BytesIO()
-        data.to_excel(excel_data, index=False)
-        excel_data.seek(0)
-        st.download_button(
-            label="Download as Excel",
-            data=excel_data.getvalue(),
-            file_name="extracted_data.xlsx"
-        )
+  
+    data.columns = df.iloc[0].values
+    data.replace(r'^Unnamed: \d+$', np.nan, regex=True, inplace=True)
 
-if __name__ == "__main__":
-    main()
+ 
+    def Layer(value):
+        match = re.search(r'Layer : (\d+)', value)
+        return int(match.group(1)) if match else None
+
+    def Money(value):
+        if pd.isna(value):
+            return None
+        match = re.search(r'Disputed Amount: (\d+)', str(value))
+        return int(match.group(1)) if match else None
+
+ 
+    data['Amount'] = data['Transaction Details'].apply(Money)
+    data['Layer'] = data['Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber'].apply(Layer)
+
+    return data
+
+
+st.title("PDF to Excel Converter")
+
+
+uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
+
+if uploaded_file is not None:
+
+    with open("temp_pdf.pdf", "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    st.success("PDF file uploaded successfully!")
+
+    if st.button("Convert to Excel"):
+        with st.spinner('Processing...'):
+           
+            processed_data = process_pdf("temp_pdf.pdf")
+
+
+            output_excel = "converted_data.xlsx"
+            processed_data.to_excel(output_excel, index=False)
+
+            st.success("Conversion successful! Click below to download the Excel file.")
+            with open(output_excel, "rb") as file:
+                btn = st.download_button(
+                    label="Download Excel",
+                    data=file,
+                    file_name="converted_data.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+            st.subheader("Distribution of Disputed Amounts")
+            fig, ax = plt.subplots()
+            ax.hist(processed_data['Amount'], bins='auto')
+            ax.set_xlabel('Disputed Amount')
+            ax.set_ylabel('Frequency')
+            st.pyplot(fig)
+
+            # Chart 2: Average disputed amount per layer
+            st.subheader("Average Disputed Amount by Layer")
+            avg_amount_per_layer = processed_data.groupby('Layer')['Amount'].mean()
+            st.bar_chart(avg_amount_per_layer)
+
+    if os.path.exists("temp_pdf.pdf"):
+        os.remove("temp_pdf.pdf")
