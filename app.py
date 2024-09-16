@@ -101,7 +101,7 @@ if uploaded_file is not None:
             st.bar_chart(top_transactions)
 
             #-------------------------------
-            wordcloud = WordCloud(width=800, height=400).generate(' '.join(data['Transaction Details']))
+            wordcloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details']))
 
             st.subheader("Word Cloud of Transaction Details")
             st.image(wordcloud)
