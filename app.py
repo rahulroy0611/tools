@@ -112,9 +112,9 @@ if uploaded_file is not None:
             st.bar_chart(total_amount_by_layer)
 
             # 3. Transaction Distribution by Merchant
-            st.subheader("Transaction Distribution by Merchant")
-            merchant_counts = processed_data['Merchant Name'].value_counts()
-            st.bar_chart(merchant_counts)
+            # st.subheader("Transaction Distribution by Merchant")
+            # merchant_counts = processed_data['Merchant Name'].value_counts()
+            # st.bar_chart(merchant_counts)
 
             # 4. Transaction Volume Over Time (if you have a 'Date' column)
             if 'Date' in processed_data.columns:
