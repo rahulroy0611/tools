@@ -94,39 +94,40 @@ if uploaded_file is not None:
             avg_amount_per_layer = processed_data.groupby('Layer')['Amount'].mean()
             st.bar_chart(avg_amount_per_layer)
 
-            # Assuming 'Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber' is the account column
-            top_accounts = processed_data.groupby('Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber')['Amount'].sum().sort_values(ascending=False)
-            st.subheader("Top Disputed Accounts")
-            st.bar_chart(top_accounts[:10])  # Display top 10 accounts
+            # New Charts
+            # Time-based Analysis (assuming a 'Date' column)
+            if 'Date' in processed_data.columns:
+                st.subheader("Disputed Amounts Over Time")
+                fig, ax = plt.subplots()
+                ax.plot(processed_data['Date'], processed_data['Amount'])
+                ax.set_xlabel('Date')
+                ax.set_ylabel('Disputed Amount')
+                st.pyplot(fig)
 
-            # Assuming 'Transaction Details' contains textual descriptions
-            # word_cloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details'].astype(str)))
-            # fig, ax = plt.subplots()
-            # ax.imshow(word_cloud, interpolation='nearest')
-            # ax.axis("off")
-            # st.subheader("Word Cloud of Transaction Details")
-            # st.pyplot(fig)
-
-            st.subheader("Layer-wise Disputed Amount Distribution")
+            # Transaction Details Analysis (assuming 'Transaction Details' contains textual data)
+            st.subheader("Word Cloud of Transaction Details")
+            word_cloud = WordCloud(width=800, height=400).generate(' '.join(processed_data['Transaction Details'].astype(str)))
             fig, ax = plt.subplots()
-            sns.boxplot(x='Layer', y='Amount', data=processed_data)
-            ax.set_xlabel('Layer')
-            ax.set_ylabel('Disputed Amount')
+            ax.imshow(word_cloud, interpolation='bilinear')
+            ax.axis('off')
             st.pyplot(fig)
 
-            st.subheader("Correlation Matrix")
-            correlation_matrix = processed_data.corr()
-            st.dataframe(correlation_matrix)
+            # Account-based Analysis (assuming 'Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber' is the account column)
+            st.subheader("Top Disputed Accounts")
+            top_accounts = processed_data.groupby('Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber')['Amount'].sum().sort_values(ascending=False)
+            st.bar_chart(top_accounts[:10])  # Display top 10 accounts
 
+            # Correlation Analysis (if applicable)
+            if processed_data.select_dtypes(include='number').shape[1] > 1:
+                st.subheader("Correlation Matrix")
+                correlation_matrix = processed_data.corr()
+                st.dataframe(correlation_matrix)
 
-            # Add a slider for filtering disputed amounts
+            # Interactive Filters
+            st.subheader("Interactive Filters")
             disputed_amount_filter = st.slider("Filter Disputed Amount:", min_value=processed_data['Amount'].min(), max_value=processed_data['Amount'].max())
-
-            # Filter data based on the slider
             filtered_data = processed_data[processed_data['Amount'] >= disputed_amount_filter]
-
-            # Display filtered data or charts
-
+            st.write(filtered_data)  # Or display other charts or visualizations based on filtered data
 
 
     if os.path.exists("temp_pdf.pdf"):
