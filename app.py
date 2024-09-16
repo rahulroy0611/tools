@@ -125,11 +125,6 @@ if uploaded_file is not None:
             top_accounts = processed_data.groupby('Account\rNo./ (Wallet\r/PG/PA) Id\rTransaction\rId / UTR\rNumber')['Amount'].sum().sort_values(ascending=False)
             st.bar_chart(top_accounts[:10])  # Display top 10 accounts
 
-            # Correlation Analysis (if applicable)
-            if processed_data.select_dtypes(include='number').shape[1] > 1:
-                st.subheader("Correlation Matrix")
-                correlation_matrix = processed_data.corr()
-                st.dataframe(correlation_matrix)
 
 
     if os.path.exists("temp_pdf.pdf"):
