@@ -2,6 +2,7 @@ import streamlit as st
 import camelot
 import pandas as pd
 import os
+import openpyxl
 
 def pdf_to_excel(uploaded_file):
     """Converts a PDF file to Excel.
@@ -29,11 +30,14 @@ def pdf_to_excel(uploaded_file):
 
             # Write each table to a separate sheet, removing headers and index
             for i, table in enumerate(tables):
-                # Additional data cleaning and filtering here
-                cleaned_df = table.df.dropna(how='all')  # Remove rows with all NaN values
-                # cleaned_df = cleaned_df.drop(columns=['Column Name if Necessary'])  # Remove unnecessary columns
+                # Identify the range of data cells based on table structure
+                data_start_row, data_start_col = table.df.index[0], table.df.columns.get_loc(table.df.columns[0])
+                data_end_row, data_end_col = table.df.index[-1], table.df.columns.get_loc(table.df.columns[-1])
 
-                cleaned_df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
+                # Extract the relevant data range
+                table_data = table.df.iloc[data_start_row:data_end_row + 1, data_start_col:data_end_col + 1]
+
+                table_data.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
 
             # Save the Excel file
             writer.close()
