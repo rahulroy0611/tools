@@ -31,7 +31,7 @@ def pdf_to_excel(uploaded_file):
             for i, table in enumerate(tables):
                 # Additional data cleaning and filtering here
                 cleaned_df = table.df.dropna(how='all')  # Remove rows with all NaN values
-                cleaned_df = cleaned_df.drop(columns=['Column Name if Necessary'])  # Remove unnecessary columns
+                # cleaned_df = cleaned_df.drop(columns=['Column Name if Necessary'])  # Remove unnecessary columns
 
                 cleaned_df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
 
