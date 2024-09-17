@@ -32,7 +32,7 @@ def pdf_to_excel(uploaded_file):
                 table.df.to_excel(writer, sheet_name=f"Table {i+1}")
 
             # Save the Excel file
-            writer.save()
+            writer.close()  # Close the writer object
             st.success(f"PDF converted to Excel: {excel_file}")
         except Exception as e:
             st.error(f"Error converting PDF: {e}")
