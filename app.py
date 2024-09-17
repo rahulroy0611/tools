@@ -2,8 +2,6 @@ import streamlit as st
 import camelot
 import pandas as pd
 import os
-import openpyxl
-import matplotlib.pyplot as plt
 
 def pdf_to_excel(uploaded_file):
     """Converts a PDF file to Excel.
@@ -46,61 +44,15 @@ def pdf_to_excel(uploaded_file):
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
             st.success(f"PDF converted to Excel: {excel_file}")
-            return excel_file  # Return the excel filename for further processing
         except Exception as e:
             st.error(f"Error converting PDF: {e}")
-            return None  # Return None on error
         finally:
             # Remove the temporary file if it exists
             if os.path.exists("temp.pdf"):
                 os.remove("temp.pdf")
 
-
-def analyze_excel(excel_file):
-    """
-    Analyzes the uploaded Excel file and generates charts.
-
-    Args:
-        excel_file (str): Path to the Excel file.
-    """
-
-    if not excel_file:
-        return
-
-    # Load the Excel data using pandas
-    df = pd.read_excel(excel_file)
-
-    # Assuming your data has columns like "Bank", "Amount", and "Layer"
-    # Modify these column names based on your actual data
-
-    # Bank base (Top N)
-    top_banks = df['Bank'].value_counts().nlargest(5).reset_index(name='Count').rename(columns={'index': 'Bank'})
-    st.subheader("Top 5 Banks (Based on Count)")
-    st.bar_chart(top_banks, x='Bank', y='Count')
-
-    # Maximum to minimum per layer
-    max_min_per_layer = df.groupby('Layer')['Amount'].agg(max=pd.NamedAgg(column='Amount', aggfunc='max'), min=pd.NamedAgg(column='Amount', aggfunc='min'))
-    st.subheader("Maximum and Minimum Amount per Layer")
-    st.dataframe(max_min_per_layer)
-
-    # Connection to all layers (Assuming Transaction ID column exists)
-    transaction_connections = df.groupby('Transaction ID')['Layer'].unique().reset_index(name='Connected Layers')
-    st.subheader("Connections to All Layers")
-    st.dataframe(transaction_connections)
-
-    # Layer wise analysis (Assuming numeric column for analysis)
-    # Modify the column name and chart type based on your data
-    average_per_layer = df.groupby('Layer')['Amount'].mean().reset_index()
-    plt.figure(figsize=(10, 6))
-    plt.plot(average_per_layer['Layer'], average_per_layer['Amount'])
-    plt.xlabel("Layer")
-    plt.ylabel("Average Amount")
-    plt.title("Average Amount per Layer")
-    st.pyplot()
-
-
 def main():
-    st.title("PDF to Excel Converter with Analysis")
+    st.title("PDF to Excel Converter")
 
     uploaded_file = st.file_uploader("Choose a PDF file")
 
@@ -108,9 +60,8 @@ def main():
         pdf_file = uploaded_file.name
         st.write(f"Uploaded file: {pdf_file}")
 
-        if st.button("Convert to Excel and Analyze"):
-            excel_file = pdf_to_excel(uploaded_file)
-            analyze_excel(excel_file)
+        if st.button("Convert to Excel"):
+            pdf_to_excel(uploaded_file)
 
 if __name__ == "__main__":
     main()
