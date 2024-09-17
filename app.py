@@ -22,22 +22,18 @@ def pdf_to_excel(uploaded_file):
             if not os.path.exists(pdf_file):
                 raise FileNotFoundError(f"PDF file not found: {pdf_file}")
 
-            tables = camelot.read_pdf(pdf_file, flavor='lattice')
+            # Experiment with different Camelot flavors and parameters
+            tables = camelot.read_pdf(pdf_file, flavor='lattice', table_areas=['0,0,800,800'])  # Adjust table_areas as needed
+
             excel_file = pdf_file.replace(".pdf", ".xlsx")
 
             # Create an Excel writer
             writer = pd.ExcelWriter(excel_file, engine='openpyxl')
 
-            # Write each table to a separate sheet, removing headers and index
+            # Write each table to a separate sheet
             for i, table in enumerate(tables):
-                # Identify the range of data cells based on table structure
-                data_start_row, data_start_col = table.df.index[0], table.df.columns.get_loc(table.df.columns[0])
-                data_end_row, data_end_col = table.df.index[-1], table.df.columns.get_loc(table.df.columns[-1])
-
-                # Extract the relevant data range
-                table_data = table.df.iloc[data_start_row:data_end_row + 1, data_start_col:data_end_col + 1]
-
-                table_data.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
+                # ... (rest of your code for identifying and extracting data)
+                table.df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
 
             # Save the Excel file
             writer.close()
