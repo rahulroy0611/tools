@@ -32,7 +32,17 @@ def pdf_to_excel(uploaded_file):
                 table.df.to_excel(writer, sheet_name=f"Table {i+1}")
 
             # Save the Excel file
-            writer.close()  # Close the writer object
+            writer.close()
+
+            # Download option
+            with open(excel_file, "rb") as f:
+                excel_data = f.read()
+            st.download_button(
+                label="Download Excel File",
+                data=excel_data,
+                file_name=excel_file,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
             st.success(f"PDF converted to Excel: {excel_file}")
         except Exception as e:
             st.error(f"Error converting PDF: {e}")
