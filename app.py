@@ -27,9 +27,9 @@ def pdf_to_excel(uploaded_file):
             # Create an Excel writer
             writer = pd.ExcelWriter(excel_file, engine='openpyxl')
 
-            # Write each table to a separate sheet
+            # Write each table to a separate sheet, removing headers and index
             for i, table in enumerate(tables):
-                table.df.to_excel(writer, sheet_name=f"Table {i+1}")
+                table.df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
 
             # Save the Excel file
             writer.close()
