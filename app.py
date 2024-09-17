@@ -16,6 +16,18 @@ def pdf_to_excel(uploaded_file):
 
         try:
             # ... rest of your conversion logic using pdf_file ...
+            tables = camelot.read_pdf(pdf_file, flavor='lattice')
+            excel_file = pdf_file.replace(".pdf", ".xlsx")
+
+            # Create an Excel writer
+            writer = pd.ExcelWriter(excel_file, engine='openpyxl')
+
+            # Write each table to a separate sheet
+            for i, table in enumerate(tables):
+                table.df.to_excel(writer, sheet_name=f"Table {i+1}")
+
+            writer.save()
+            st.success(f"PDF converted to Excel: {excel_file}")
         except Exception as e:
             st.error(f"Error converting PDF: {e}")
         finally:
