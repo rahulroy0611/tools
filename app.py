@@ -1,6 +1,5 @@
 import streamlit as st
 import camelot, os
-import ghostscript
 import pandas as pd
 
 def pdf_to_excel(uploaded_file):
@@ -27,6 +26,7 @@ def pdf_to_excel(uploaded_file):
             for i, table in enumerate(tables):
                 table.df.to_excel(writer, sheet_name=f"Table {i+1}")
 
+            # Call the save method on the writer object (corrected line)
             writer.save()
             st.success(f"PDF converted to Excel: {excel_file}")
         except Exception as e:
