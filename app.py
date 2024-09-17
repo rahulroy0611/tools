@@ -1,6 +1,7 @@
 import streamlit as st
-import camelot, os
+import camelot
 import pandas as pd
+import os
 
 def pdf_to_excel(uploaded_file):
     """Converts a PDF file to Excel.
@@ -16,6 +17,10 @@ def pdf_to_excel(uploaded_file):
                 f.write(pdf_bytes)
             pdf_file = "temp.pdf"  # Use the temporary file path
 
+            # Check if the PDF file exists
+            if not os.path.exists(pdf_file):
+                raise FileNotFoundError(f"PDF file not found: {pdf_file}")
+
             tables = camelot.read_pdf(pdf_file, flavor='lattice')
             excel_file = pdf_file.replace(".pdf", ".xlsx")
 
@@ -26,13 +31,13 @@ def pdf_to_excel(uploaded_file):
             for i, table in enumerate(tables):
                 table.df.to_excel(writer, sheet_name=f"Table {i+1}")
 
-            # Call the save method on the writer object (corrected line)
+            # Save the Excel file
             writer.save()
             st.success(f"PDF converted to Excel: {excel_file}")
         except Exception as e:
             st.error(f"Error converting PDF: {e}")
         finally:
-            # Optionally, remove the temporary file after processing
+            # Remove the temporary file if it exists
             if os.path.exists("temp.pdf"):
                 os.remove("temp.pdf")
 
