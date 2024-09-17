@@ -1,6 +1,7 @@
 import streamlit as st
 import camelot, os
 import ghostscript
+import pandas as pd
 
 def pdf_to_excel(uploaded_file):
     """Converts a PDF file to Excel.
