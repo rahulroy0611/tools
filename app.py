@@ -5,7 +5,6 @@ import os
 import openpyxl
 import matplotlib.pyplot as plt
 
-
 def pdf_to_excel(uploaded_file):
     """Converts a PDF file to Excel.
 
@@ -85,10 +84,9 @@ def analyze_excel(excel_file):
     st.dataframe(max_min_per_layer)
 
     # Connection to all layers (Assuming Transaction ID column exists)
-    # This requires further logic to identify connections based on your data
-    # Placeholder for now
-    st.subheader("Connections to All Layers (Placeholder)")
-    st.write("This section requires further analysis based on your specific data structure. The Transaction ID column can be used to identify connections between layers.")
+    transaction_connections = df.groupby('Transaction ID')['Layer'].unique().reset_index(name='Connected Layers')
+    st.subheader("Connections to All Layers")
+    st.dataframe(transaction_connections)
 
     # Layer wise analysis (Assuming numeric column for analysis)
     # Modify the column name and chart type based on your data
@@ -102,4 +100,17 @@ def analyze_excel(excel_file):
 
 
 def main():
-    st
+    st.title("PDF to Excel Converter with Analysis")
+
+    uploaded_file = st.file_uploader("Choose a PDF file")
+
+    if uploaded_file is not None:
+        pdf_file = uploaded_file.name
+        st.write(f"Uploaded file: {pdf_file}")
+
+        if st.button("Convert to Excel and Analyze"):
+            excel_file = pdf_to_excel(uploaded_file)
+            analyze_excel(excel_file)
+
+if __name__ == "__main__":
+    main()
