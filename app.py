@@ -29,7 +29,11 @@ def pdf_to_excel(uploaded_file):
 
             # Write each table to a separate sheet, removing headers and index
             for i, table in enumerate(tables):
-                table.df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
+                # Additional data cleaning and filtering here
+                cleaned_df = table.df.dropna(how='all')  # Remove rows with all NaN values
+                cleaned_df = cleaned_df.drop(columns=['Column Name if Necessary'])  # Remove unnecessary columns
+
+                cleaned_df.to_excel(writer, sheet_name=f"Table {i+1}", index=False, header=False)
 
             # Save the Excel file
             writer.close()
