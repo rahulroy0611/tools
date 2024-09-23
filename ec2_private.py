@@ -67,8 +67,8 @@ def main():
 
         if public_ips:
             st.success("Private IP addresses:")
-            for ip in public_ips:
-                st.write(ip)
+            # for ip in public_ips:
+            #     st.write(ip)
 
             # Create a text file with the IP addresses
             text_data = "\n".join(public_ips)
