@@ -88,13 +88,13 @@ def main():
     session_token = st.text_input("SSO Session Token")
     region = st.selectbox("AWS Region", regions)
 
-    # Button to retrieve public IP addresses
+    # Button to retrieve private IP addresses
     if st.button("Retrieve Private IPs"):
         # If SSO session token is empty, try to get it automatically
         if not session_token:
             session_token = get_sso_token()
 
-        private_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
+        private_ips = get_ec2_public_ips(access_key, secret_key, session_token, region)
 
         if private_ips:
             st.success("Retrive Private Addresses")
