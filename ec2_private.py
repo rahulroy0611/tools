@@ -1,22 +1,15 @@
 import streamlit as st
 import boto3
 
-def get_sso_token():
-    # Implement your SSO token retrieval logic here
-    # For example, you might use a library like boto3's STS client
-    # to exchange an SSO code for a session token
-
-    return "your_sso_session_token"
-
-def get_ec2_public_ips(access_key, secret_key, session_token):
-    """Retrieves public IP addresses of EC2 instances using provided credentials and session token."""
+def get_ec2_public_ips(access_key, secret_key, region):
+    """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
 
     try:
-        # Create an AWS session with the provided credentials and session token
+        # Create an AWS session with the provided credentials and region
         session = boto3.Session(
             aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
-            aws_session_token=session_token
+            region_name=region
         )
 
         # Get an EC2 client
@@ -41,10 +34,11 @@ def get_ec2_public_ips(access_key, secret_key, session_token):
 def main():
     st.title("AWS EC2 Public IP Retriever (SSO)")
 
-    # Get user input for access key, secret key, and SSO token
+    # Get user input for access key, secret key, SSO token, and region
     access_key = st.text_input("Access Key ID")
     secret_key = st.text_input("Secret Access Key")
     session_token = st.text_input("SSO Session Token")
+    region = st.text_input("AWS Region (e.g., us-east-1)")
 
     # Button to retrieve public IP addresses
     if st.button("Retrieve Public IPs"):
@@ -52,7 +46,7 @@ def main():
         if not session_token:
             session_token = get_sso_token()
 
-        public_ips = get_ec2_public_ips(access_key, secret_key, session_token)
+        public_ips = get_ec2_public_ips(access_key, secret_key, session_token, region)
 
         if public_ips:
             st.success("Public IP addresses:")
