@@ -18,7 +18,7 @@ def get_sso_token():
     return "your_sso_session_token"
 
 def get_ec2_private_ips(access_key, secret_key, session_token, region):
-    """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
+    """Retrieves private IP addresses of EC2 instances using provided credentials and region."""
 
     try:
         # Create an AWS session with the provided credentials and region
@@ -35,7 +35,7 @@ def get_ec2_private_ips(access_key, secret_key, session_token, region):
         # List all EC2 instances
         response = ec2.describe_instances()
 
-        # Extract public IP addresses from the response
+        # Extract private IP addresses from the response
         private_ips = []
         for reservation in response['Reservations']:
             for instance in reservation['Instances']:
@@ -47,7 +47,7 @@ def get_ec2_private_ips(access_key, secret_key, session_token, region):
     except Exception as e:
         st.error(f"Error: {e}")
         return []
-    
+
 def get_ec2_public_ips(access_key, secret_key, session_token, region):
     """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
 
@@ -80,7 +80,7 @@ def get_ec2_public_ips(access_key, secret_key, session_token, region):
         return []
 
 def main():
-    st.title("AWS EC2 Private IP Retriever (SSO)")
+    st.title("AWS EC2 IP Retriever (SSO)")
 
     # Get user input for access key, secret key, SSO token, and region
     access_key = st.text_input("Access Key ID")
@@ -94,12 +94,12 @@ def main():
         if not session_token:
             session_token = get_sso_token()
 
-        private_ips = get_ec2_public_ips(access_key, secret_key, session_token, region)
+        private_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
 
         if private_ips:
-            st.success("Retrive Private Addresses")
-            # for ip in public_ips:
-            #     st.write(ip)
+            st.success("Retrieved Private Addresses")
+            for ip in private_ips:
+                st.write(ip)
 
             # Create a text file with the IP addresses
             text_data = "\n".join(private_ips)
@@ -107,22 +107,23 @@ def main():
 
             # Download the text file
             st.download_button(
-                label="Download",
+                label="Download Private IPs as Text",
                 data=text_data,
                 file_name=text_file
             )
 
-    if st.button('Retrive Public Addresses'):
-
+    # Button to retrieve public IP addresses
+    if st.button("Retrieve Public IPs"):
+        # If SSO session token is empty, try to get it automatically
         if not session_token:
             session_token = get_sso_token()
 
-        public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
+        public_ips = get_ec2_public_ips(access_key, secret_key, session_token, region)
 
         if public_ips:
-            st.success("Retrive Public Addresses")
-            # for ip in public_ips:
-            #     st.write(ip)
+            st.success("Retrieved Public Addresses")
+            for ip in public_ips:
+                st.write(ip)
 
             # Create a text file with the IP addresses
             text_data = "\n".join(public_ips)
@@ -130,7 +131,7 @@ def main():
 
             # Download the text file
             st.download_button(
-                label="Download",
+                label="Download Public IPs as Text",
                 data=text_data,
                 file_name=text_file
             )
