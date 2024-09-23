@@ -1,6 +1,6 @@
 import streamlit as st
 import subprocess
-import re
+import re, time
 
 # Define available scan options
 scan_options = {
@@ -43,11 +43,19 @@ def main():
 
     # Button to initiate the scan
     if st.button("Scan"):
-        # Run the scan in the background using subprocess
+        # Create a progress bar
+        progress_bar = st.progress(0)
+
+        # Run the scan in the background
         scan_command = f"{scan_options[selected_scan]} {filtered_target}"
         result = subprocess.run(scan_command, shell=True, capture_output=True, text=True)
 
-        # Display the scan results in a non-editable and auto-expandable text area
+        # Simulate a long-running process (replace with actual progress tracking)
+        for i in range(100):
+            time.sleep(0.1)
+            progress_bar.progress(i + 1)
+
+        # Display the scan results
         with st.expander("Scan Results"):
             st.markdown(f"<p>{result.stdout}</p>")
 
