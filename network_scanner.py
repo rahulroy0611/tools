@@ -7,8 +7,9 @@ scan_options = {
     "Ping Scan": "nmap -sP",
     "TCP Port Scan": "nmap -p1-65535",
     "UDP Port Scan": "nmap -pU 1-65535",
-    "Vulnerability Scan": "nmap -sV",
+    "Version Scan": "nmap -sV",
     "Operating System Scan": "nmap -O",
+    "Vulnerability Scan": "nmap --script=vuln",
 }
 
 # Function to filter input for common injection attacks
@@ -48,7 +49,7 @@ def main():
 
         # Display the scan results in a non-editable and auto-expandable text area
         with st.expander("Scan Results"):
-            st.text_area("", result.stdout, height=None, max_chars=None)
+            st.markdown(f"<p>{result.stdout}</p>")
 
 if __name__ == "__main__":
     main()
