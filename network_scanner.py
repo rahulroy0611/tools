@@ -19,6 +19,7 @@ script_options = {
     "SMB": "script=smb*",
     "SSL": "script=ssl*",
     "FTP": "script=ftp*",
+    "Vulnerability": "script=vuln",
 }
 
 
