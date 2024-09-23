@@ -16,7 +16,7 @@ def get_sso_token():
 
     return "your_sso_session_token"
 
-def get_ec2_public_ips(access_key, secret_key, session_token, region):
+def get_ec2_private_ips(access_key, secret_key, session_token, region):
     """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
 
     try:
@@ -38,8 +38,8 @@ def get_ec2_public_ips(access_key, secret_key, session_token, region):
         public_ips = []
         for reservation in response['Reservations']:
             for instance in reservation['Instances']:
-                if 'PublicIpAddress' in instance:
-                    public_ips.append(instance['PublicIpAddress'])
+                if 'PrivateIpAddress' in instance:
+                    public_ips.append(instance['PrivateIpAddress'])
 
         return public_ips
 
@@ -57,19 +57,19 @@ def main():
     region = st.selectbox("AWS Region", regions)
 
     # Button to retrieve public IP addresses
-    if st.button("Retrieve Public IPs"):
+    if st.button("Retrieve Private IPs"):
         # If SSO session token is empty, try to get it automatically
         if not session_token:
             session_token = get_sso_token()
 
-        public_ips = get_ec2_public_ips(access_key, secret_key, session_token, region)
+        public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
 
         if public_ips:
-            st.success("Public IP addresses:")
+            st.success("Private IP addresses:")
             for ip in public_ips:
                 st.write(ip)
         else:
-            st.error("No public IP addresses found.")
+            st.error("No private IP addresses found.")
 
 if __name__ == "__main__":
     main()
