@@ -5,7 +5,8 @@ import re, time
 # Define available scan options
 scan_options = {
     "Ping Scan": "nmap -sP",
-    "TCP Port Scan": "nmap -p1-65535",
+    "TCP All Port Scan": "nmap -p1-65535",
+    "UDP All Port Scan": "nmap -pU 1-65535",
     "UDP Port Scan": "nmap -pU 1-65535",
     "Version Scan": "nmap -sV",
     "Operating System Scan": "nmap -O",
