@@ -66,8 +66,7 @@ def main():
             progress_bar.progress(i + 1)
 
         # Display the scan results
-        with st.expander("Scan Results"):
-            st.markdown(f"<div class='preformatted'>{result.stdout}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='preformatted'>{result.stdout}</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
