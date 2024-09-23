@@ -66,7 +66,7 @@ def main():
             progress_bar.progress(i + 1)
 
         # Display the scan results
-        st.text_area(result.stdout.replace('<', '&lt;').replace('>', '&gt;'), height=None, max_chars=None, monospace=True)
+        st.write(f"{result.stdout.replace('<', '&lt;').replace('>', '&gt;')}</pre>")
 
 if __name__ == "__main__":
     main()
