@@ -98,8 +98,8 @@ def main():
 
         if private_ips:
             st.success("Retrieved Private Addresses")
-            for ip in private_ips:
-                st.write(ip)
+            # for ip in private_ips:
+            #     st.write(ip)
 
             # Create a text file with the IP addresses
             text_data = "\n".join(private_ips)
@@ -122,8 +122,8 @@ def main():
 
         if public_ips:
             st.success("Retrieved Public Addresses")
-            for ip in public_ips:
-                st.write(ip)
+            # for ip in public_ips:
+            #     st.write(ip)
 
             # Create a text file with the IP addresses
             text_data = "\n".join(public_ips)
