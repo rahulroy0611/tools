@@ -78,6 +78,39 @@ def get_ec2_public_ips(access_key, secret_key, session_token, region):
     except Exception as e:
         st.error(f"Error: {e}")
         return []
+    
+
+def get_ec2_imdsv1_ips(access_key, secret_key, session_token, region):
+    """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
+
+    try:
+        # Create an AWS session with the provided credentials and region
+        session = boto3.Session(
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            aws_session_token=session_token,
+            region_name=region
+        )
+
+        # Get an EC2 client
+        ec2 = session.client('ec2')
+
+        # List all EC2 instances
+        response = ec2.describe_instances()
+
+        # Extract public IP addresses from the response
+        imdsv1_ips = []
+        for reservation in response['Reservations']:
+            for instance in reservation['Instances']:
+                if 'MetadataOptions' in instance:
+                    if instance['MetadataOptions']['HttpPutResponseHopLimit'] == 1:
+                        imdsv1_ips.append(instance['InstanceId'])
+
+        return imdsv1_ips
+
+    except Exception as e:
+        st.error(f"Error: {e}")
+        return []
 
 def main():
     st.title("AWS EC2 IP Retriever (SSO)")
@@ -132,6 +165,29 @@ def main():
             # Download the text file
             st.download_button(
                 label="Download Public IPs as Text",
+                data=text_data,
+                file_name=text_file
+            )
+
+    if st.button("Retrieve ImdSv1 InstanceIDs"):
+        # If SSO session token is empty, try to get it automatically
+        if not session_token:
+            session_token = get_sso_token()
+
+        imdsv1_ips = get_ec2_imdsv1_ips(access_key, secret_key, session_token, region)
+
+        if imdsv1_ips:
+            st.success("Retrieved IMDSv1 Instance Ids")
+            # for ip in public_ips:
+            #     st.write(ip)
+
+            # Create a text file with the IP addresses
+            text_data = "\n".join(public_ips)
+            text_file = "ec2_imdsv1_instanceids.txt"
+
+            # Download the text file
+            st.download_button(
+                label="Download IMDSv1 InstanceIds",
                 data=text_data,
                 file_name=text_file
             )
