@@ -49,7 +49,7 @@ def get_ec2_private_ips(access_key, secret_key, session_token, region):
         return []
 
 def main():
-    st.title("AWS EC2 Public IP Retriever (SSO)")
+    st.title("AWS EC2 Private IP Retriever (SSO)")
 
     # Get user input for access key, secret key, SSO token, and region
     access_key = st.text_input("Access Key ID")
