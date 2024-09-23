@@ -1,5 +1,6 @@
 import streamlit as st
 import boto3
+import io
 
 # List of all AWS regions
 regions = [
@@ -68,8 +69,17 @@ def main():
             st.success("Private IP addresses:")
             for ip in public_ips:
                 st.write(ip)
-        else:
-            st.error("No private IP addresses found.")
+
+            # Create a text file with the IP addresses
+            text_data = "\n".join(public_ips)
+            text_file = "ec2_private_ips.txt"
+
+            # Download the text file
+            st.download_button(
+                label="Download as Text",
+                data=text_data,
+                file_name=text_file
+            )
 
 if __name__ == "__main__":
     main()
