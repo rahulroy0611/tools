@@ -13,10 +13,10 @@ scan_options = {
 
 script_options = {
     "_Blank": "",
-    "Telnet": "telnet*",
-    "SMB": "smb*",
-    "SSL": "ssl*",
-    "FTP": "ftp*",
+    "Telnet": "script=telnet*",
+    "SMB": "script=smb*",
+    "SSL": "script=ssl*",
+    "FTP": "script=ftp*",
 }
 
 
