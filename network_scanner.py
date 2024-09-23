@@ -56,7 +56,7 @@ def main():
     # Button to initiate the scan
     if st.button("Scan"):
         # Run the scan in the background
-        scan_command = f"{scan_options[selected_scan]} {filtered_target} {selected_script}"
+        scan_command = f"{scan_options[selected_scan]} {filtered_target} {script_options[selected_script]}"
         result = subprocess.run(scan_command, shell=True, capture_output=True, text=True)
 
         # Display the scan results
