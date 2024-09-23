@@ -27,7 +27,7 @@ def main():
         result = subprocess.run(scan_command, shell=True, capture_output=True, text=True)
 
         # Display the scan results
-        st.text_area("Scan Results", result.stdout)
+        st.text_area("Scan Results", result.stdout, height=None, max_chars=None)
 
 if __name__ == "__main__":
     main()
