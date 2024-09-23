@@ -66,7 +66,7 @@ def main():
         public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
 
         if public_ips:
-            st.success("Private IP addresses:")
+            st.success("Retrive Private Addresses")
             # for ip in public_ips:
             #     st.write(ip)
 
@@ -76,7 +76,7 @@ def main():
 
             # Download the text file
             st.download_button(
-                label="Download as Text",
+                label="Download",
                 data=text_data,
                 file_name=text_file
             )
