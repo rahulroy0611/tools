@@ -95,8 +95,6 @@ def main():
             session_token = get_sso_token()
 
         private_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
-        public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
-
 
         if private_ips:
             st.success("Retrive Private Addresses")
@@ -113,6 +111,13 @@ def main():
                 data=text_data,
                 file_name=text_file
             )
+
+    if st.button('Retrive Public Addresses'):
+
+        if not session_token:
+            session_token = get_sso_token()
+
+        public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
 
         if public_ips:
             st.success("Retrive Public Addresses")
