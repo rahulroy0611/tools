@@ -57,7 +57,7 @@ def main():
 
         # Display the scan results
         with st.expander("Scan Results"):
-            st.markdown(f"<p>{result.stdout}</p>")
+            st.markdown(f"{result.stdout}")
 
 if __name__ == "__main__":
     main()
