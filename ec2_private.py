@@ -36,11 +36,42 @@ def get_ec2_private_ips(access_key, secret_key, session_token, region):
         response = ec2.describe_instances()
 
         # Extract public IP addresses from the response
-        public_ips = []
+        private_ips = []
         for reservation in response['Reservations']:
             for instance in reservation['Instances']:
                 if 'PrivateIpAddress' in instance:
-                    public_ips.append(instance['PrivateIpAddress'])
+                    private_ips.append(instance['PrivateIpAddress'])
+
+        return private_ips
+
+    except Exception as e:
+        st.error(f"Error: {e}")
+        return []
+    
+def get_ec2_public_ips(access_key, secret_key, session_token, region):
+    """Retrieves public IP addresses of EC2 instances using provided credentials and region."""
+
+    try:
+        # Create an AWS session with the provided credentials and region
+        session = boto3.Session(
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            aws_session_token=session_token,
+            region_name=region
+        )
+
+        # Get an EC2 client
+        ec2 = session.client('ec2')
+
+        # List all EC2 instances
+        response = ec2.describe_instances()
+
+        # Extract public IP addresses from the response
+        public_ips = []
+        for reservation in response['Reservations']:
+            for instance in reservation['Instances']:
+                if 'PublicIpAddress' in instance:
+                    public_ips.append(instance['PublicIpAddress'])
 
         return public_ips
 
@@ -63,16 +94,34 @@ def main():
         if not session_token:
             session_token = get_sso_token()
 
+        private_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
         public_ips = get_ec2_private_ips(access_key, secret_key, session_token, region)
 
-        if public_ips:
+
+        if private_ips:
             st.success("Retrive Private Addresses")
             # for ip in public_ips:
             #     st.write(ip)
 
             # Create a text file with the IP addresses
-            text_data = "\n".join(public_ips)
+            text_data = "\n".join(private_ips)
             text_file = "ec2_private_ips.txt"
+
+            # Download the text file
+            st.download_button(
+                label="Download",
+                data=text_data,
+                file_name=text_file
+            )
+
+        if public_ips:
+            st.success("Retrive Public Addresses")
+            # for ip in public_ips:
+            #     st.write(ip)
+
+            # Create a text file with the IP addresses
+            text_data = "\n".join(public_ips)
+            text_file = "ec2_public_ips.txt"
 
             # Download the text file
             st.download_button(
