@@ -9,7 +9,14 @@ scan_options = {
     "UDP Port Scan": "nmap -pU 1-65535",
     "Version Scan": "nmap -sV",
     "Operating System Scan": "nmap -O",
-    "Vulnerability Scan": "nmap --script=vuln",
+}
+
+script_options = {
+    "_Blank": "",
+    "Telnet": "telnet*",
+    "SMB": "smb*",
+    "SSL": "ssl*",
+    "FTP": "ftp*",
 }
 
 
@@ -43,20 +50,14 @@ def main():
 
     # Dropdown for scan options
     selected_scan = st.selectbox("Select Scan Type", list(scan_options.keys()))
+    
+    selected_script = st.selectbox("Select Script", list(script_options.keys()))
 
     # Button to initiate the scan
     if st.button("Scan"):
-        # Create a progress bar
-        progress_bar = st.progress(0)
-
         # Run the scan in the background
-        scan_command = f"{scan_options[selected_scan]} {filtered_target}"
+        scan_command = f"{scan_options[selected_scan]} {filtered_target} {selected_script}"
         result = subprocess.run(scan_command, shell=True, capture_output=True, text=True)
-
-        # Simulate a long-running process (replace with actual progress tracking)
-        for i in range(100):
-            time.sleep(0.1)
-            progress_bar.progress(i + 1)
 
         # Display the scan results
         st.markdown("<br>".join(result.stdout.splitlines()), unsafe_allow_html=True)
