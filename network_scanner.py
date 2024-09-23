@@ -12,15 +12,8 @@ scan_options = {
     "Vulnerability Scan": "nmap --script=vuln",
 }
 
-preformatted_text = """
-.preformatted {
-  font-family: monospace;
-  white-space: pre;
-}
-"""
 
 st.set_page_config(page_title="Network Scanner", page_icon=":gear:", layout="wide")
-st.markdown(preformatted_text, unsafe_allow_html=True)
 
 # Function to filter input for common injection attacks
 def filter_input(input_str):
