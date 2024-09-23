@@ -59,7 +59,7 @@ def main():
             progress_bar.progress(i + 1)
 
         # Display the scan results
-        st.markdown("<br>".join(result.stdout.splitlines()), height=None, max_chars=None, monospace=True)
+        st.markdown("<br>".join(result.stdout.splitlines()), max_chars=None, monospace=True)
 
 if __name__ == "__main__":
     main()
